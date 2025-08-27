@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    container_name: uptime_db
+    restart: always
+    environment:
+      POSTGRES_USER: monitor
+      POSTGRES_PASSWORD: monitor
+      POSTGRES_DB: monitor
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    container_name: uptime_adminer
+    restart: always
+    ports:
+      - "8080:8080"
+
+  app:
+    build: .
+    container_name: uptime_app
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DB_URL: postgresql://monitor:monitor@db:5432/monitor
+      URLS: "https://google.com,https://github.com"
+      CHECK_INTERVAL: 60
+      SLACK_WEBHOOK: ""
+    command: >
+      sh -c "uvicorn src.api:app --host 0.0.0.0 --port 8000 & python src/app.py"
+    ports:
+      - "8000:8000"
+      - "5000:5000"
+
+volumes:
+  db_data:
+
