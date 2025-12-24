@@ -24,7 +24,7 @@ system and is fully containerized using Docker Compose.
 1. Clone the repository:
 
 ```bash
-git clone <your-repo-url>
+git clone
 cd uptime-monitor
 ```
 
