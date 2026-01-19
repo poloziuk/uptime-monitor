@@ -4,6 +4,7 @@ from src.checker import check_url
 from src.db import save_result, init_db
 from src.alerts import send_slack_alert
 
+
 async def monitor():
     init_db()
     while True:
@@ -15,6 +16,6 @@ async def monitor():
                 send_slack_alert(f"🚨 {result['url']} is DOWN")
         await asyncio.sleep(CHECK_INTERVAL)
 
+
 if __name__ == "__main__":
     asyncio.run(monitor())
-

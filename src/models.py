@@ -4,6 +4,7 @@ import datetime
 
 Base = declarative_base()
 
+
 class CheckResult(Base):
     __tablename__ = "checks"
     id = Column(Integer, primary_key=True, index=True)
@@ -11,4 +12,3 @@ class CheckResult(Base):
     status = Column(Boolean, nullable=False)
     response_time = Column(Integer)  # мс
     timestamp = Column(DateTime, default=datetime.datetime.utcnow)
-

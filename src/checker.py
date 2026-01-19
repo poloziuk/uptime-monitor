@@ -1,6 +1,7 @@
 import httpx
 import time
 
+
 async def check_url(url: str):
     try:
         start = time.perf_counter()
@@ -10,4 +11,3 @@ async def check_url(url: str):
         return {"url": url, "status": resp.status_code == 200, "time": elapsed}
     except Exception:
         return {"url": url, "status": False, "time": None}
-

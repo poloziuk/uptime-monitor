@@ -3,6 +3,7 @@ from src.db import get_results, init_db
 
 app = Flask(__name__)
 
+
 @app.route("/")
 def index():
     results = get_results()
@@ -27,6 +28,7 @@ def index():
     </html>
     """
     return render_template_string(html, results=results)
+
 
 if __name__ == "__main__":
     init_db()  # переконайся, що база створена
