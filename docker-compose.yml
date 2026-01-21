@@ -2,9 +2,12 @@ version: "3.9"
 
 services:
   db:
-    image: postgres:15
+    image: postgres
     container_name: uptime_db
     restart: always
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
     environment:
       POSTGRES_USER: monitor
       POSTGRES_PASSWORD: monitor
@@ -13,11 +16,20 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+    tmpfs:
+      - /tmp
+      - /run
+      - /var/run/postgresql
 
   adminer:
     image: adminer
     container_name: uptime_adminer
     restart: always
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp
     ports:
       - "8080:8080"
 
@@ -25,6 +37,9 @@ services:
     build: .
     container_name: uptime_app
     restart: always
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
     depends_on:
       - db
     environment:
@@ -37,6 +52,8 @@ services:
     ports:
       - "8000:8000"
       - "5000:5000"
+    tmpfs:
+      - /tmp
 
 volumes:
   db_data:
