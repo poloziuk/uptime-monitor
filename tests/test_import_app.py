@@ -1,4 +1,4 @@
 def test_import_app():
-    from src.app import app
+    from app import app
     assert app is not None
 
