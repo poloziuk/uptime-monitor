@@ -1,11 +1,10 @@
-version: "3.9"
 
 services:
   db:
-    image: postgres
+    image: postgres:latest
     container_name: uptime_db
     restart: always
-    read_only: true
+#    read_only: true
     security_opt:
       - no-new-privileges:true
     environment:
@@ -15,7 +14,13 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U monitor"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     tmpfs:
       - /tmp
       - /run
@@ -25,7 +30,7 @@ services:
     image: adminer
     container_name: uptime_adminer
     restart: always
-    read_only: true
+#    read_only: true
     security_opt:
       - no-new-privileges:true
     tmpfs:
@@ -37,21 +42,43 @@ services:
     build: .
     container_name: uptime_app
     restart: always
-    read_only: true
+#    read_only: true
     security_opt:
       - no-new-privileges:true
     depends_on:
       - db
     environment:
       DB_URL: postgresql://monitor:monitor@db:5432/monitor
+#      URLS: "https://google.com,https://github.com"
+      CHECK_INTERVAL: 60
+      SLACK_WEBHOOK: ""
+    command: uvicorn src.api:app --host 0.0.0.0 --port 8000
+#      sh -c "uvicorn src.api:app --host 0.0.0.0 --port 8000 & python src/app.py"
+    ports:
+      - "8000:8000"
+#      - "5000:5000"
+    tmpfs:
+      - /tmp
+
+  worker:
+    build: .
+    container_name: uptime_worker
+    restart: always
+#    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_URL: postgresql://monitor:monitor@db:5432/monitor
       URLS: "https://google.com,https://github.com"
       CHECK_INTERVAL: 60
       SLACK_WEBHOOK: ""
-    command: >
-      sh -c "uvicorn src.api:app --host 0.0.0.0 --port 8000 & python src/app.py"
-    ports:
-      - "8000:8000"
-      - "5000:5000"
+    command: python src/app.py
+#    ports:
+#      - "8000:8000"
+#      - "5000:5000"
     tmpfs:
       - /tmp
 
