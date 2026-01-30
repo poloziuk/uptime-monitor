@@ -75,7 +75,7 @@ services:
       URLS: "https://google.com,https://github.com"
       CHECK_INTERVAL: 60
       SLACK_WEBHOOK: ""
-    command: python src/app.py
+    command: python src/worker.py
 #    ports:
 #      - "8000:8000"
 #      - "5000:5000"
