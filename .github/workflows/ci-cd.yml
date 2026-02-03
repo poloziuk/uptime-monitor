@@ -109,10 +109,11 @@ jobs:
             $IMAGE_NAME:ci
 
       - name: Wait for startup
-        run: for i in {1..10}; do
-               curl -f http://localhost:8000/status && break
-               sleep 2
-             done
+        run:  |
+          for i in {1..10}; do
+            curl -f http://localhost:8000 && break
+            sleep 2
+          done
 
       - name: Healthcheck
         run: curl -f http://localhost:8000/status
@@ -136,7 +137,7 @@ jobs:
   push-image:
     name: Push Docker Image to GHCR
     runs-on: ubuntu-latest
-    needs: build-image
+    needs: [image-tests, orca]
 
     permissions:
       contents: read
