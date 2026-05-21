@@ -17,8 +17,9 @@ def startup():
 def home(request: Request):
     results = get_results()
     return templates.TemplateResponse(
-        "index.html",
-        {"request": request, "results": results},
+        request=request,
+        name="index.html",
+        context={"results": results},
     )
 
 
