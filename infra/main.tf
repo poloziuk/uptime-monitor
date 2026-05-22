@@ -73,6 +73,9 @@ resource "aws_instance" "app" {
     image_tag = var.image_tag
   })
 
+  # Force instance replacement whenever the bootstrap script or image tag changes
+  user_data_replace_on_change = true
+
   tags = {
     Name = "uptime-monitor-dev"
   }
