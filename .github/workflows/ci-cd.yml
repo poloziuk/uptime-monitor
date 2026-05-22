@@ -178,6 +178,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
+      - name: Download existing Terraform state (if any)
+        uses: actions/download-artifact@v4
+        with:
+          name: terraform-state
+          path: infra
+        continue-on-error: true  # no artifact on first run — that's fine
+
       - name: Terraform Init
         working-directory: infra
         run: terraform init
