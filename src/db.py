@@ -20,18 +20,22 @@ def save_result(result: dict):
         session.commit()
 
 
-def get_last_results(limit=10):
+def _row_to_dict(r: CheckResult) -> dict:
+    return {
+        "id": r.id,
+        "url": r.url,
+        "status": r.status,
+        "response_time": r.response_time,
+        "timestamp": r.timestamp,
+    }
+
+
+def get_last_results(limit: int = 10):
     with SessionLocal() as session:
-        return (
+        rows = (
             session.query(CheckResult)
             .order_by(CheckResult.timestamp.desc())
             .limit(limit)
             .all()
         )
-
-
-def get_results():
-    session = SessionLocal()
-    results = session.query(CheckResult).all()
-    session.close()
-    return results
+        return [_row_to_dict(r) for r in rows]

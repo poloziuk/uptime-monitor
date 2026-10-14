@@ -1,3 +1,5 @@
 [tool.black]
 line-length = 88
-pythonpath = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
